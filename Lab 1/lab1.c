@@ -29,68 +29,9 @@
 
 int get_sign(double x)
 {
-<<<<<<< HEAD
 	unsigned long int *bits = (unsigned long int *) &x; //The double represented as bits
 	int sign = F64_GET_SIGN(*bits); //Holds the sign bit as an int (1 or 0)
 	return sign;
-=======
-	printf("x: %d\n", x);
-
-	double mant_;
-	unsigned long int *num_bits = (unsigned long int *) & x;
-	char sign;
-	
-	if(x == 0)
-	{
-		*exp = 0;
-		
-		printf("Sign: %d\n", sign);
-		printf("Exponent: %d\n", *exp);
-		
-		return (0.0);
-	}
-	else if(x == NAN)
-	{
-		return NAN
-	}
-	else if(x == INFINITY || x == -INFINITY)
-	{
-		return x;
-	}
-	else{
-		sign = *num_bits >> F64_SIGN_SHIFT;
-	
-		if(!sign)
-		{
-			*exp = (*num_bits >> F64_EXP_SHIFT) - (F64_EXP_BIAS - 1);
-		}
-		else
-		{
-			*exp = (*num_bits >> F64_EXP_SHIFT) - 3070;
-		}
-	
-		mant_ = *num_bits & F64_MANT_MASK;
-		mant_ = (((mant_/pow(2,52)) + 1)/2);
-		
-		printf("Sign: %d\n", sign);
-		printf("Exponent: %d\n", *exp);
-		printf("Mantissa: %f\n\n", pow(-1, sign) * mant_);
-		
-		return pow(-1, sign) * mant_;
-	}
-}
-
-void readAsChar(double x, int *exp)
-{
-	double mant_;
-	unsigned long int *num_bits = (unsigned long int *) & x;
-	unsigned char characters;
-	
-	for(i = 0; i < 8; ++i)
-	{
-		characters |= (
-	}
->>>>>>> 6c36153518ab32329ca4967111fd755291d3057a
 }
 
 double frexp_2(double x, int *exp)
