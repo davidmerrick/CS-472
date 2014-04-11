@@ -38,27 +38,44 @@ double frexp_2(double x, int *exp)
 	unsigned long int *num_bits = (unsigned long int *) & x;
 	char sign;
 	
-	sign = *num_bits >> F64_SIGN_SHIFT;
-	
-	
-	if(!sign)
+	if(x == 0)
 	{
-		*exp = (*num_bits >> F64_EXP_SHIFT) - (F64_EXP_BIAS - 1);
+		*exp = 0;
+		
+		printf("Sign: %d\n", sign);
+		printf("Exponent: %d\n", *exp);
+		
+		return (0.0);
 	}
-	else
+	else if(x == NAN)
 	{
-		*exp = (*num_bits >> F64_EXP_SHIFT) - 3070;
+		return NAN
 	}
+	else if(x == INFINITY || x == -INFINITY)
+	{
+		return x;
+	}
+	else{
+		sign = *num_bits >> F64_SIGN_SHIFT;
 	
-	mant_ = *num_bits & F64_MANT_MASK;
-	mant_ = (((mant_/pow(2,52)) + 1)/2);
+		if(!sign)
+		{
+			*exp = (*num_bits >> F64_EXP_SHIFT) - (F64_EXP_BIAS - 1);
+		}
+		else
+		{
+			*exp = (*num_bits >> F64_EXP_SHIFT) - 3070;
+		}
 	
-	
-	printf("Sign: %d\n", sign);
-	printf("Exponent: %d\n", *exp);
-	printf("Mantissa: %f\n\n", pow(-1, sign) * mant_);
-	
-	return pow(-1, sign) * mant_;
+		mant_ = *num_bits & F64_MANT_MASK;
+		mant_ = (((mant_/pow(2,52)) + 1)/2);
+		
+		printf("Sign: %d\n", sign);
+		printf("Exponent: %d\n", *exp);
+		printf("Mantissa: %f\n\n", pow(-1, sign) * mant_);
+		
+		return pow(-1, sign) * mant_;
+	}
 }
 
 void readAsChar(double x, int *exp)
