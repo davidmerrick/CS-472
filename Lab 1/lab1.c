@@ -34,7 +34,7 @@ int get_sign(double x)
 	return sign;
 }
 
-double frexp_2(double x, int *exp)
+double our_frexp(double x, int *exp)
 {
 	//Take care of denormalized numbers
 	if(x == 0){
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
 	printf("\n\n");
 
 	input = atof(argv[1]);
-	z.d = frexp_2(input, &e_ours);
+	z.d = our_frexp(input, &e_ours);
 	printf("Our frexp: %f * 2^%d\n", z.d, e_ours);
 
 	double y = frexp(input, &e_actual);
