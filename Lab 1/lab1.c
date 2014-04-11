@@ -3,126 +3,94 @@
 #include <stdlib.h>
 #include <math.h>
 
-#define F64_EXP_MAX 
-
 #define F64_EXP_MASK 0x7FF0000000000000
 #define F64_EXP_SHIFT 52
-#define F64_GET_EXP(fp)
+#define F64_GET_EXP(fp) (fp & F64_EXP_MASK) >> F64_EXP_SHIFT
+#define F64_GET_SIGN(fp) fp >> F64_SIGN_SHIFT
 
 #define F64_MANT_MASK 0xFFFFFFFFFFFFFL
 #define F64_MANT_SHIFT 0
-#define F64_GET_MANT_HIGH(fp)
-#define F64_GET_MANT_LOW(fp)
+
+// We're not actually using these
+// #define F64_GET_MANT_HIGH(fp)
+// #define F64_GET_MANT_LOW(fp)
 
 #define F64_SIGN_SHIFT 63;
 
+// Biasing is done because exponents have to be signed values in order to be able to represent both
+// tiny and large values, but two's complement, the usual representation for signed values,
+// would make comparison harder.
+//
+// For a double-precision number, an exponent in the range −1022 .. +1023 is
+// biased by adding 2^11-1, or 1023, to get a value in the range 1 .. 2046
+// Source: http://en.wikipedia.org/wiki/Exponent_bias
 #define F64_EXP_BIAS 1023
 #define F64_SET_EXP
 
-
-typedef union {
-	double num;
-	struct {
-		unsigned long long int mant : 52;
-		unsigned long long int exp : 11;
-		unsigned long long int sign : 1;
-	} num_str;
-} u_bits;
-
+int get_sign(double x)
+{
+	unsigned long int *bits = (unsigned long int *) &x; //The double represented as bits
+	int sign = F64_GET_SIGN(*bits); //Holds the sign bit as an int (1 or 0)
+	return sign;
+}
 
 double frexp_2(double x, int *exp)
 {
-	printf("x: %d\n", x);
+	double mantissa; //Holds the 52 mantissa bits
+	unsigned long int *bits = (unsigned long int *) &x; //The double represented as bits
+	int sign = get_sign(x);
 
-	double mant_;
-	unsigned long int *num_bits = (unsigned long int *) & x;
-	char sign;
-	
-	sign = *num_bits >> F64_SIGN_SHIFT;
-	
-	
-	if(!sign)
-	{
-		*exp = (*num_bits >> F64_EXP_SHIFT) - (F64_EXP_BIAS - 1);
-	}
-	else
-	{
-		*exp = (*num_bits >> F64_EXP_SHIFT) - 3070;
-	}
-	
-	mant_ = *num_bits & F64_MANT_MASK;
-	mant_ = (((mant_/pow(2,52)) + 1)/2);
-	
-	
-	printf("Sign: %d\n", sign);
-	printf("Exponent: %d\n", *exp);
-	printf("Mantissa: %f\n\n", pow(-1, sign) * mant_);
-	
-	return pow(-1, sign) * mant_;
+	//Sign bit is 1; Number is negative, or Sign bit is 0; Number is positive.
+	//3070 = 2047 + 1023
+	//If the number is negative,
+	*exp = sign ? ((*bits >> F64_EXP_SHIFT) - 3070) : ((*bits >> F64_EXP_SHIFT) - (F64_EXP_BIAS - 1));
+
+	mantissa = *bits & F64_MANT_MASK;
+	mantissa = (((mantissa/pow(2,52)) + 1)/2);
+
+	return pow(-1, sign) * mantissa;
 }
-
-void readAsChar(double x, int *exp)
-{
-	double mant_;
-	unsigned long int *num_bits = (unsigned long int *) & x;
-	unsigned char characters;
-	
-	for(i = 0; i < 8; ++i)
-	{
-		characters |= (
-	}
-}
-
-void featureExt(value, eptr)
-{
-	/*
-	* value is treated as a double
-	*/
-	printf("If the value is treated as a double: ");
-	printf("The mantissa is: ");
-	printf("The sign is : ");
-	printf("The exponent is : ");
-	/*
-	* value is treated as a long
-	*/
-	printf("If the value is treated as a long: ");
-	printf("The value is: ");
-	printf("The sign is: ");
-	/*
-	* value is treated as a 8 chars
-	*/
-	printf("If the value is treated as 8 characters: ");
-	printf("The characters are: ");
-}
-
 
 int main(int argc, char *argv[])
 {
-	unsigned int e;
+	// Pointers for exponents to our implementation and
+	// actual implementations of frexp, respectively
+	unsigned int e_ours, e_actual;
 	double input;
-	double q;
 
 	if (argc < 2){
 		printf("Must input a number.");
+		exit(1);
 	}
 
-	printf("argv[1]: %s\n", argv[1]);	
-
 	input = atof(argv[1]);
-	
-	printf("input: %d\n", input);
 
-	q = frexp_2(input, &e);
+	double x = frexp_2(input, &e_ours);
+	printf("Our frexp: %f * 2^%d\n\n", x, e_ours);
 
-	printf("\tmyfrexp: %f * 2^%d\n\n", q, e);
+	double y = frexp(input, &e_actual);
+	printf("Actual frexp: %f * 2^%d\n\n", y, e_actual);
 
-	//q = union_frexp(input, &e);
-
-	//printf("\tunion_frexp: %f * 2^%d\n\n", q, e);
-
-	q = frexp(input, &e);
-
-	printf("\tREAL frexp: %f * 2^%d\n\n", q, e);
+	//Extract the features
+	printf("Feature extraction:\n");
+	/*
+	* value is treated as a double
+	*/
+	printf("If the value is treated as a double: \n");
+	printf("The mantissa is: %f\n", x);
+	printf("The sign is: %d\n", get_sign(x));
+	printf("The exponent is: %d\n", e_ours);
+	/*
+	* value is treated as a long
+	*/
+	printf("If the value is treated as a long: \n");
+	printf("The value is: %l\n", (long) x);
+	printf("The sign is: %l\n", (long) get_sign(x));
+	/*
+	* value is treated as a 8 chars
+	*/
+	printf("If the value is treated as 8 characters: \n");
+	printf("The characters are: %s\n", (char) x);
 
 	return 0;
 }
