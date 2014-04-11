@@ -53,6 +53,15 @@ double frexp_2(double x, int *exp)
 
 int main(int argc, char *argv[])
 {
+	//Union for feature extraction later
+	union DoubleData {
+      double d;
+			union myun {
+				char b[8];
+				long l;
+			} x;
+  } z;
+
 	// Pointers for exponents to our implementation and
 	// actual implementations of frexp, respectively
 	unsigned int e_ours, e_actual;
@@ -63,34 +72,35 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 
-	input = atof(argv[1]);
+	printf("\n\n");
 
-	double x = frexp_2(input, &e_ours);
-	printf("Our frexp: %f * 2^%d\n\n", x, e_ours);
+	input = atof(argv[1]);
+	z.d = frexp_2(input, &e_ours);
+	printf("Our frexp: %f * 2^%d\n", z.d, e_ours);
 
 	double y = frexp(input, &e_actual);
-	printf("Actual frexp: %f * 2^%d\n\n", y, e_actual);
+	printf("Actual frexp: %f * 2^%d\n", y, e_actual);
+	printf("\n\n");
 
-	//Extract the features
-	printf("Feature extraction:\n");
-	/*
-	* value is treated as a double
-	*/
+	// Extract the features
+	printf("Feature extraction:\n\n");
+
+	// Double
 	printf("If the value is treated as a double: \n");
-	printf("The mantissa is: %f\n", x);
-	printf("The sign is: %d\n", get_sign(x));
-	printf("The exponent is: %d\n", e_ours);
-	/*
-	* value is treated as a long
-	*/
+	printf("Mantissa: %f\n", z.d);
+	printf("Sign: %d\n", get_sign(z.d));
+	printf("Exponent: %d\n", e_ours);
+	printf("\n\n");
+
+	// Long
 	printf("If the value is treated as a long: \n");
-	printf("The value is: %l\n", (long) x);
-	printf("The sign is: %l\n", (long) get_sign(x));
-	/*
-	* value is treated as a 8 chars
-	*/
+	printf("Value: %l\n", z.x.l);
+	printf("Sign: %l\n", get_sign(z.x.l));
+	printf("\n\n");
+
+	// 8 Chars
 	printf("If the value is treated as 8 characters: \n");
-	printf("The characters are: %s\n", (char) x);
+	printf("Characters: %s\n", z.x.b);
 
 	return 0;
 }
