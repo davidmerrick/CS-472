@@ -1,9 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
-#include <sys/types.h>
 #include <math.h>
-#include <sys/cdefs.h>
-//#include <machine/ieee.h>
 
 
 #define F64_EXP_MAX 
@@ -17,27 +14,34 @@
 #define F64_GET_MANT_HIGH(fp)
 #define F64_GET_MANT_LOW(fp)
 
-#define F64_EXP_BIAS
+#define F64_EXP_BIAS 1023
 #define F64_SET_EXP
 
+typedef union{
+	double num;
+	struct{
+		unsigned long long int mantissa : 52;
+		unsigned long long int exponent : 11;
+		unsigned long long int sign : 1;
+	} num_bits;
+} u;
 
 
-double frexp(x, exp)
-		double x;
-		int *exp;
+double frexp(double x, int *exp)
 {
-	union
-	{
-		double v;
-		uint64_t s;
-		//struct ieee_double s;
-	} u;
+
+	double mant;
+	u nb;
+
+	nb.num = x;
+	*exp = nb.num_bits.exponent - (F64_EXP_BIAS - 1);
+	mant = ((nb.num_bits.mantissa)/(pow(2.0,52)) + 1) / 2;
 	
-	//1 = sign
-	//11 = exp -> int
-	//52 = fraction -> long
-	
-	
+	printf("Sign = %d\n",nb.num_bits.sign);
+	printf("Exponent = %d\n", *exp);
+	printf("Mantissa = %f\n\n", pow(-1, nb.num_bits.sign) * nb.num_bits.mantissa);
+
+	/*
 	if(x == 0)
 	{
 		*exp = 0;
@@ -57,9 +61,9 @@ double frexp(x, exp)
 		u.v = x;
 		u.v = (u.s & F64_MANT_MASK) >> F64_MANT_MASK;
 		*exp = (u.s & F64_EXP_MASK) >> F64_EXP_SHIFT;
-		return x;
-		
+		return u.v;		
 	}
+	*/
 	
 }
 
@@ -107,9 +111,11 @@ void printBits(size_t const size, void const * const ptr)
 
 int main(int argc, const char* argv[])
 {
-	double number = 1.0;
-	int* ptr; //= (int*)malloc(sizeof(int));
-	double reNum = frexp(number, ptr);
+	double number = 10.0;
+	unsigned int expon;
 
-	printBits(12, &reNum);
+	double reNum = frexp(number, &expon);
+
+	printBits(64, &reNum);
+	return;
 }
