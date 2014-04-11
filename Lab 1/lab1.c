@@ -36,6 +36,16 @@ int get_sign(double x)
 
 double frexp_2(double x, int *exp)
 {
+	//Take care of denormalized numbers
+	if(x == 0){
+		*exp = 0;
+		return (0.0);
+	} else if(x == NAN){
+		return NAN;
+	} else if(x == INFINITY || x == -INFINITY){
+		return x;
+	}
+
 	double mantissa; //Holds the 52 mantissa bits
 	unsigned long int *bits = (unsigned long int *) &x; //The double represented as bits
 	int sign = get_sign(x);
@@ -56,7 +66,7 @@ int main(int argc, char *argv[])
 	//Union for feature extraction later
 	union DoubleData {
       double d;
-			union myun {
+			union {
 				char b[8];
 				long l;
 			} x;
@@ -68,7 +78,8 @@ int main(int argc, char *argv[])
 	double input;
 
 	if (argc < 2){
-		printf("Must input a number.");
+		//Puke and exit
+		printf("Must input a number.\n");
 		exit(1);
 	}
 
