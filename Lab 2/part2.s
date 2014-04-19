@@ -70,7 +70,7 @@ One_Case	;Set r0 to 1, meaning string was a palindrome
 
 Done
 
-		AREA Data, DATA, ABSOLUTE, READWRITE
+		AREA Data, DATA, READWRITE
 Str		DCB "MOM",CR				;Assign labels for each memory location
 		
 		END					;Done
