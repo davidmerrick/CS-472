@@ -1,4 +1,4 @@
-		AREA Lab2, CODE, READONLY
+		AREA Lab2, CODE, READWRITE
 		ENTRY
 		
 CR		EQU 0x0D
@@ -7,10 +7,12 @@ Start	MOV r0,#0			;Point the registers to the memory locations
 		MOV r1,#0			;Make sure these are initially zero'd out
 		MOV r2,#0
 		MOV r3,#0			;Use this as loop counter and str length
-		LDR r4,=Data		;Point r4 to the data
+;		ADR r4,String		;Point r4 to the data
 		MOV r5,#0			;Holds the current position of char to be compared
 		MOV	r6,#0			;Hold the length of the string
 		MOV	r7,#0			;Use as temp register?
+		ADR r4,hello
+		;MOV r4,#:upper16:.LC0
 		
 		
 Loop						;While not last char, get another byte
@@ -21,7 +23,7 @@ Loop						;While not last char, get another byte
 		BAL		Loop		;Loop again
 
 Loop_End	
-		LDR		r6,[r3]		;Store length of string in r6 (value of r3, not address,
+		LDR		r6,[r3],#0		;Store length of string in r6 (value of r3, not address,
 							;specified with the []
 		SUB		r3,r3,#1
 		
@@ -40,7 +42,7 @@ Div_Two			;Finds half the length of the string, so we know how many times to che
 		BAL		Div_Two
 
 
-Load_Half		
+Load_Half	
 		LDR		r3,[r7]	;Load the value of r7 into r3, which is half the length of the array
 							;In other words, we now know how many times to loop through and compare
 							;bytes of string
@@ -62,15 +64,13 @@ Cmp_Bytes
 
 Zero_Case	;Set r0 to 0, meaning string was not a palindrome
 		MOV r0,#0
-		B Done
 	
 One_Case	;Set r0 to 1, meaning string was a palindrome
 		MOV r0,#1
-		B Done
+
+
+hello
+		DCB "MOM",CR				;Assign labels for each memory location
 
 Done
-
-		AREA Data, DATA, READWRITE
-Str		DCB "MOM",CR				;Assign labels for each memory location
-		
 		END					;Done

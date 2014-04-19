@@ -4,7 +4,6 @@ ARM Linker, 5.03 [Build 76] [MDK-ARM Lite]
 
 Section Cross References
 
-    part2.o(Lab2) refers to part2.o(Data) for Data
 
 
 ==============================================================================
@@ -15,8 +14,7 @@ Image Symbol Table
 
     Symbol Name                              Value     Ov Type        Size  Object(Section)
 
-    Data                                     0x00000000   Section        4  part2.o(Data)
-    Lab2                                     0x00000000   Section      164  part2.o(Lab2)
+    Lab2                                     0x00000000   Section      156  part2.o(Lab2)
     part2.s                                  0x00000000   Number         0  part2.o ABSOLUTE
 
     Global Symbols
@@ -33,23 +31,59 @@ Memory Map of the image
 
   Image Entry point : 0x00000000
 
-  Load Region LR_1 (Base: 0x00000000, Size: 0x000000a8, Max: 0xffffffff, ABSOLUTE)
+  Load Region LR_1 (Base: 0x00000000, Size: 0x0000009c, Max: 0xffffffff, ABSOLUTE)
 
-    Execution Region ER_RO (Base: 0x00000000, Size: 0x000000a4, Max: 0xffffffff, ABSOLUTE)
-
-    Base Addr    Size         Type   Attr      Idx    E Section Name        Object
-
-    0x00000000   0x000000a4   Code   RO            1  * Lab2                part2.o
-
-
-    Execution Region ER_RW (Base: 0x00000000, Size: 0x00000004, Max: 0xffffffff, ABSOLUTE)
-
-    Base Addr    Size         Type   Attr      Idx    E Section Name        Object
-
-    0x00000000   0x00000004   Data   RW            2    Data                part2.o
-
-
-    Execution Region ER_ZI (Base: 0x00000004, Size: 0x00000000, Max: 0xffffffff, ABSOLUTE)
+    Execution Region ER_RO (Base: 0x00000000, Size: 0x00000000, Max: 0xffffffff, ABSOLUTE)
 
     **** No section assigned to this execution region ****
+
+
+    Execution Region ER_RW (Base: 0x00000000, Size: 0x0000009c, Max: 0xffffffff, ABSOLUTE)
+
+    Base Addr    Size         Type   Attr      Idx    E Section Name        Object
+
+    0x00000000   0x0000009c   Code   RW            1  * Lab2                part2.o
+
+
+    Execution Region ER_ZI (Base: 0x0000009c, Size: 0x00000000, Max: 0xffffffff, ABSOLUTE)
+
+    **** No section assigned to this execution region ****
+
+
+==============================================================================
+
+Image component sizes
+
+
+      Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Object Name
+
+       156          4          0          0          0        236   part2.o
+
+    ----------------------------------------------------------------------
+       156          4          0          0          0        236   Object Totals
+         0          0          0          0          0          0   (incl. Generated)
+         0          0          0          0          0          0   (incl. Padding)
+
+    ----------------------------------------------------------------------
+         0          0          0          0          0          0   Library Totals
+         0          0          0          0          0          0   (incl. Padding)
+
+    ----------------------------------------------------------------------
+
+==============================================================================
+
+
+      Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
+
+       156          4          0          0          0        236   Grand Totals
+       156          4          0          0          0        236   ELF Image Totals
+       156          4          0          0          0          0   ROM Totals
+
+==============================================================================
+
+    Total RO  Size (Code + RO Data)                  156 (   0.15kB)
+    Total RW  Size (RW Data + ZI Data)                 0 (   0.00kB)
+    Total ROM Size (Code + RO Data + RW Data)        156 (   0.15kB)
+
+==============================================================================
 
