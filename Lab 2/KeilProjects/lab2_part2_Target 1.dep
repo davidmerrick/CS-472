@@ -1,0 +1,2 @@
+Dependencies for Project 'lab2_part2', Target 'Target 1': (DO NOT MODIFY !)
+F (.\part2.s)(0x5351F9FF)(--cpu ARM7TDMI --bi --pd "__EVAL SETA 1" -g --apcs=interwork -I "C:\Program Files (x86)\Kiel\ARM\RV31\INC"-I "C:\Program Files (x86)\Kiel\ARM\CMSIS\Include"--list .\part2.lst --xref -o .\part2.o --depend .\part2.d)

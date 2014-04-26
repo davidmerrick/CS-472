@@ -1,0 +1,2 @@
+Dependencies for Project 'Lab3Questions', Target 'Target 1': (DO NOT MODIFY !)
+F (.\lab3questions.s)(0x535B4E29)(--cpu ARM7TDMI --bi --pd "__EVAL SETA 1" -g --apcs=interwork -I "C:\Program Files (x86)\Kiel\ARM\RV31\INC"-I "C:\Program Files (x86)\Kiel\ARM\CMSIS\Include"--list .\lab3questions.lst --xref -o .\lab3questions.o --depend .\lab3questions.d)
